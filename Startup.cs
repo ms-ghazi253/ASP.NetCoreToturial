@@ -35,7 +35,7 @@ namespace EmployeeManagement
             app.Run(async (context) =>
             {
                 await context.Response
-                .WriteAsync(_config["Mykey"]);
+                .WriteAsync("hello world");
             });
             app.UseRouting();
 
@@ -44,7 +44,7 @@ namespace EmployeeManagement
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response
-                    .WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+                    .WriteAsync("hello");
                 });
             });
         }
