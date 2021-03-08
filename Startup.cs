@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +27,29 @@ namespace EmployeeManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.Use(async (context , next) =>
+            {
+                logger.LogInformation("mw1: incommig Request");
+                await next();
+                logger.LogInformation("mw1: incommig Request");
+            });
+            app.Use(async (context, next) =>
+            {
+                logger.LogInformation("mw2: incommig Request");
+                await next();
+                logger.LogInformation("mw2: incommig Request");
+            });
             app.Run(async (context) =>
             {
                 await context.Response
-                .WriteAsync("hello world");
+                .WriteAsync("mw3: Request handled and response produced");
+                logger.LogInformation("mw3: Request handled and response produced");
             });
             app.UseRouting();
 
