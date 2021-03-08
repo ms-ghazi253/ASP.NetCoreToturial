@@ -27,40 +27,34 @@ namespace EmployeeManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env )
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            app.Use(async (context , next) =>
-            {
-                logger.LogInformation("mw1: incommig Request");
-                await next();
-                logger.LogInformation("mw1: incommig Request");
-            });
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation("mw2: incommig Request");
-                await next();
-                logger.LogInformation("mw2: incommig Request");
-            });
+            };
+            FileServerOptions fileServerOptions = new FileServerOptions();
+            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
+            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("foo.html");
+            app.UseFileServer(fileServerOptions);
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+           
+            app.UseRouting();
             app.Run(async (context) =>
             {
                 await context.Response
-                .WriteAsync("mw3: Request handled and response produced");
-                logger.LogInformation("mw3: Request handled and response produced");
-            });
-            app.UseRouting();
+                .WriteAsync("helloooo");
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response
-                    .WriteAsync("hello");
-                });
             });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        await context.Response
+            //        .WriteAsync("hello");
+            //    });
+            //});
         }
     }
 }
